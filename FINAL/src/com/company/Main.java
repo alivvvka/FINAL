@@ -1,35 +1,50 @@
 package com.company;
 
-import com.company.FurnitureFactory.Factory;
-import com.company.FurnitureFactory.Furniture;
-import com.company.FurnitureFactory.TableFactory;
-import com.company.Observer.Bot;
-import com.company.Observer.FurnitureNotifyManager;
-import com.company.Observer.NotifyManager;
-import com.company.Observer.Observer;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import com.company.factory.*;
+import com.company.observer.Bot;
+import com.company.observer.FurnitureNotifyManager;
+import com.company.observer.Observer;
 
 public class Main {
+    private static final FurnitureNotifyManager manager = new FurnitureNotifyManager();
+    private static final Observer bot = new Bot();
 
-    public void create_notify(){
+    public static Furniture createAndNotify(boolean enable, String style, double cost, int type){
+        if (!manager.getSubs().contains(bot)){
+            manager.registerSub(bot);
+        }
 
+
+        if (type == 1){
+            Factory chairFactory = new ChairFactory();
+            Furniture chair = chairFactory.createFurniture(enable, style, cost);
+
+            manager.addFurniture(chair);
+            return chair;
+        } else if(type == 2){
+            Factory tableFactory = new TableFactory();
+            Furniture table = tableFactory.createFurniture(enable, style, cost);
+
+            manager.addFurniture(table);
+            return table;
+        } else if(type == 3){
+            Factory closetFactory = new ClosetFactory();
+            Furniture closet = closetFactory.createFurniture(enable, style, cost);
+
+            manager.addFurniture(closet);
+            return closet;
+        } else{
+            System.out.println("!!!WRONG TYPE!!!");
+            return null;
+        }
     }
 
     public static void main(String[] args) {
 
-        Factory table = new TableFactory();
-        FurnitureNotifyManager manager = new FurnitureNotifyManager();
-        Observer bot = new Bot();
+        createAndNotify(true,"Stol", 5000000, 1);
+        Furniture rofl = createAndNotify(true,"dsadas", 123123, 3);
 
-        manager.registerSub(bot);
-
-        Furniture tab = table.createFurniture(true,"Stol", 5000000);
-        manager.addFurniture(tab);
-
-        Furniture tab2 = table.createFurniture(true, "Arys", 1234567);
-        manager.addFurniture(tab2);
+        manager.removeFurniture(rofl);
 
 
 
